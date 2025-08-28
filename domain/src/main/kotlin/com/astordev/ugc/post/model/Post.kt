@@ -20,7 +20,7 @@ class Post (
             title: String,
             content: String,
             categoryId: CategoryId
-        ): com.astordev.ugc.post.model.Post {
+        ): Post {
             val now = LocalDateTime.now()
             return Post(PostId.generate(), title, content, userId, categoryId, now, now, null)
         }
@@ -28,10 +28,10 @@ class Post (
 
 
     fun update(title: String, content: String, categoryId: CategoryId): Post {
-        this.title = title;
-        this.content = content;
-        this.categoryId = categoryId;
-        this.updatedAt = LocalDateTime.now();
+        this.title = title
+        this.content = content
+        this.categoryId = categoryId
+        this.updatedAt = LocalDateTime.now()
         return this
     }
     fun delete(): Post {
