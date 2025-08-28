@@ -1,31 +1,29 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("org.springframework.boot") version "3.5.5"
-    id("io.spring.dependency-management") version "1.1.7"
-    kotlin("jvm") version "2.2.10"
-    kotlin("plugin.spring") version "2.2.10"
-    kotlin("plugin.jpa") version "2.2.10"
+    id("org.springframework.boot") version "3.5.5" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
+    kotlin("jvm") version "2.2.10" apply false
+    kotlin("plugin.spring") version "2.2.10" apply false
+    kotlin("plugin.jpa") version "2.2.10" apply false
 }
 
 group = "com.astordev.ugc"
 version = "0.0.1-SNAPSHOT"
 
 subprojects {
-    repositories {
-        mavenCentral()
-    }
     apply(plugin = "java")
     apply(plugin = "idea")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
-    apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
 
 
+    repositories {
+        mavenCentral()
+    }
 
-    java {
+    configure<JavaPluginExtension> {
         sourceCompatibility = JavaVersion.VERSION_21
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
