@@ -4,7 +4,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.11")
 
     implementation(project(":common"))
-//    implementation(project(":domain"))
+    implementation(project(":domain"))
 //
 //    implementation(project(":usecase:post-usecase"))
 //    implementation(project(":usecase:inspected-post-usecase"))
