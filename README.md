@@ -1,6 +1,6 @@
 Fast Campus [한번에 끝내는 Kafka Ecosystem](https://fastcampus.co.kr/dev_online_newkafka) 강의의 Part 2-2. Event Driven Architecture 강의를 보며 직접 따라한 실습 repository 입니다.
 
-처음부터 직접 구현하기 위해 fork 없이 직접 실습합니다.
+처음부터 직접 구현하기 위해 fork 없이 직접 실습합니다. java 기반 대신 kotlin 기반으로 재구성 했습니다.
 
 [원본 repository](https://github.com/HyunSangHan/fastcampus-kafka-event-driven-architecture)
 
