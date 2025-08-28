@@ -4,7 +4,7 @@ import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.user.model.UserId
 import java.time.LocalDateTime
 
-class Post (
+class Post private constructor(
     var id: PostId,
     var title: String,
     var content: String,
