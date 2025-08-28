@@ -24,6 +24,19 @@ class Post private constructor(
             val now = LocalDateTime.now()
             return Post(PostId.generate(), title, content, userId, categoryId, now, now, null)
         }
+
+        fun from(
+            id: PostId,
+            title: String,
+            content: String,
+            userId: UserId,
+            categoryId: CategoryId,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime,
+            deletedAt: LocalDateTime?
+        ): Post {
+            return Post(id, title, content, userId, categoryId, createdAt, updatedAt, deletedAt)
+        }
     }
 
 

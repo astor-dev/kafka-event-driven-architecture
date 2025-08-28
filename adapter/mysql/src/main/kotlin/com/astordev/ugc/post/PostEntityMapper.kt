@@ -19,7 +19,7 @@ fun Post.toEntity(): PostEntity {
 }
 
 fun PostEntity.toDomain(): Post {
-    return Post(
+    return Post.from(
         id = PostId.from(this.id),
         title = this.title,
         content = this.content,
