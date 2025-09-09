@@ -1,8 +1,12 @@
 subprojects {
-    dependencies {
-        implementation("org.springframework.boot:spring-boot-starter:3.2.0")
+    apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
+
+    dependencies {
         implementation(project(":common"))
         implementation(project(":domain"))
+
+        implementation("org.springframework:spring-context")
+        implementation("org.slf4j:slf4j-api")
     }
 }
