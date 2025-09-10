@@ -2,18 +2,30 @@ package com.astordev.ugc.post.model
 
 import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.user.model.UserId
+import java.lang.reflect.Array.set
 import java.time.LocalDateTime
 
 class Post private constructor(
-    var id: PostId,
-    var title: String,
-    var content: String,
-    var userId: UserId,
-    var categoryId: CategoryId,
-    var createdAt: LocalDateTime,
-    var updatedAt: LocalDateTime,
-    var deletedAt: LocalDateTime?
+    val id: PostId,
+    title: String,
+    content: String,
+    val userId: UserId,
+    categoryId: CategoryId,
+    val createdAt: LocalDateTime,
+    updatedAt: LocalDateTime,
+    deletedAt: LocalDateTime?
 ) {
+    var title: String = title
+        private set
+    var content: String = content
+        private set
+    var categoryId: CategoryId = categoryId
+        private set
+    var updatedAt: LocalDateTime = updatedAt
+        private set
+    var deletedAt: LocalDateTime? = deletedAt
+        private set
+
     companion object {
         fun generate(
             userId: UserId,

@@ -4,6 +4,7 @@ import com.astordev.ugc.port.PostPort
 import com.astordev.ugc.post.model.Post
 import com.astordev.ugc.post.model.PostId
 import org.springframework.stereotype.Component
+
 @Component
 class PostAdapter(
     val postJpaRepository: PostJpaRepository
