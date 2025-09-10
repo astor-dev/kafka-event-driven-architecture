@@ -3,6 +3,7 @@ package com.astordev.ugc
 interface IdProvider<T> {
     fun generate(): T
     fun from(id: Long): T
+    fun from(id: String): T
 }
 
 
@@ -22,7 +23,7 @@ object SnowflakeIdGenerator {
     private const val MACHINE_ID_SHIFT = SEQUENCE_BITS
 
     // NOTE: 실제로 쓸 땐 환경변수 주입
-    private val machineId: Long = 123456L
+    private val machineId: Long = 123L
 
     private var lastTimestamp: Long = -1L
     private var sequence: Long = 0L
@@ -79,5 +80,9 @@ class SnowflakeIdFactory<T>(private val constructor: (Long) -> T) : IdProvider<T
 
     override fun from(id: Long): T {
         return constructor(id)
+    }
+
+    override fun from(id: String): T {
+        return constructor(id.toLong())
     }
 }

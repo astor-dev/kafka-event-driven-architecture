@@ -5,11 +5,11 @@ import java.time.LocalDateTime
 
 
 data class PostDto (
-    val id: Long,
+    val id: String,
     val title: String,
     val content: String,
-    val userId: Long,
-    val categoryId: Long,
+    val userId: String,
+    val categoryId: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val deletedAt: LocalDateTime?
@@ -17,11 +17,11 @@ data class PostDto (
     companion object {
         fun from(post: Post): PostDto {
             return PostDto(
-                post.id.long,
+                post.id.long.toString(),
                 post.title,
                 post.content,
-                post.userId.long,
-                post.categoryId.long,
+                post.userId.long.toString(),
+                post.categoryId.long.toString(),
                 post.createdAt,
                 post.updatedAt,
                 post.deletedAt

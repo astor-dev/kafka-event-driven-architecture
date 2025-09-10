@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 
 data class PostDetailDto (
-    val id: Long,
+    val id: String,
     val title: String,
     val content: String,
     val userName: String,
@@ -16,7 +16,7 @@ data class PostDetailDto (
     companion object {
         fun from(post: ResolvedPost): PostDetailDto {
             return PostDetailDto(
-                post.id.long,
+                post.id.long.toString(),
                 post.title,
                 post.content,
                 post.userName,

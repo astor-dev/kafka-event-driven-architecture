@@ -9,7 +9,6 @@ import java.time.LocalDateTime
 @Entity(name = "posts")
 data class PostEntity (
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long,
     var title: String,
     var content: String,
