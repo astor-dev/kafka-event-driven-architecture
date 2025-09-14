@@ -21,8 +21,8 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-#  kafka:
-#    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
 #  data:
 #    mongodb:
 #      uri: mongodb://rootuser:1234@localhost:27017/campus?authSource=admin

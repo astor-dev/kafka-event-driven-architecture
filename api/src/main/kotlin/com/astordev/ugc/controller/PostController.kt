@@ -77,18 +77,27 @@ class PostController(
     ): ResponseEntity<PostDetailDto> {
         val resolvedPost = postReadUseCase.getById(PostId.from(postId))
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        return ResponseEntity.ok().body(PostDetailDto.from(resolvedPost));
+        return ResponseEntity.ok().body(PostDetailDto.from(resolvedPost))
     }
 
     @DeleteMapping("{postId}")
     fun deletePost(
         @PathVariable("postId") postId: Long
     ): ResponseEntity<PostDto> {
-        val post = postDeleteUseCase.delete(
+        val deleteResult = postDeleteUseCase.delete(
             PostDeleteUseCase.Request(
                 PostId.from(postId)
             )
         )
-        return ResponseEntity.ok().body(PostDto.from(post))
+        val response = deleteResult.mapBoth(
+            onSuccess = { ResponseEntity.ok(PostDto.from(it)) },
+            onFailure = {
+                when (it) {
+                    is PostDeleteUseCase.Error.PostNotFound ->
+                        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found")
+                }
+            }
+        )
+        return response
     }
 }

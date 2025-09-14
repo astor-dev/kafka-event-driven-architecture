@@ -1,5 +1,6 @@
 package com.astordev.ugc
 
+import com.astordev.ugc.port.OriginPostMessageProducePort
 import com.astordev.ugc.port.PostPort
 import com.astordev.ugc.post.model.Post
 import jakarta.transaction.Transactional
@@ -7,7 +8,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class PostUpdateService (
-    private val postPort: PostPort
+    private val postPort: PostPort,
+    private val originPostMessageProducePort: OriginPostMessageProducePort,
 ) : PostUpdateUseCase {
 
     @Transactional
@@ -20,6 +22,7 @@ class PostUpdateService (
             request.categoryId
         )
         val savedPost = postPort.save(post)
+        originPostMessageProducePort.sendUpdateMessage(savedPost)
         return Result.Success(savedPost)
     }
 }

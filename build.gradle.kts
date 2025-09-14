@@ -30,6 +30,9 @@ subprojects {
 
     dependencies {
         implementation(platform(project.dependencies.create("org.springframework.boot:spring-boot-dependencies:3.5.5")))
+        annotationProcessor(platform(project.dependencies.create("org.springframework.boot:spring-boot-dependencies:3.5.5")))
+        implementation("org.jetbrains.kotlin:kotlin-reflect")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
