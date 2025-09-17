@@ -27,7 +27,7 @@ class SubscribingPostRepositoryImpl(
                     Sort.by(Sort.Direction.DESC, "postCreatedAt")
                 )
             )
-        return mongoTemplate.find(query, SubscribingPostDocument::class.java, "subscribingInboxPosts")
+        return mongoTemplate.find(query, SubscribingPostDocument::class.java)
 
     }
 }

@@ -11,14 +11,14 @@ dependencies {
     implementation(project(":domain"))
 //
     implementation(project(":usecase:post"))
-//    implementation(project(":usecase:inspected-post-usecase"))
-//    implementation(project(":usecase:subscribing-post-usecase"))
+//    implementation(project(":usecase:inspected-post"))
+    implementation(project(":usecase:subscribing-post"))
 //    implementation(project(":usecase:post-search-usecase"))
 //    implementation(project(":usecase:coupon-usecase"))
 //
     implementation(project(":adapter:kafka"))
     implementation(project(":adapter:mysql"))
-//    implementation(project(":adapter:mongodb"))
+    implementation(project(":adapter:mongodb"))
 //    implementation(project(":adapter:redis"))
 //    implementation(project(":adapter:elasticsearch"))
     implementation(project(":adapter:metadata-client"))
