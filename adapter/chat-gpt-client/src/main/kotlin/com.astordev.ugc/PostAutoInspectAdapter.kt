@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class PostAutoInspectAdapter(
     private val chatGptClient: ChatGptClient,
 ) : PostAutoInspectPort {
-    private val objectMapper = CustomObjectMapper() // CustomObjectMapper 클래스가 있다고 가정
+    private val objectMapper = CustomObjectMapper()
 
     override fun inspect(
         post: Post,
@@ -29,7 +29,7 @@ class PostAutoInspectAdapter(
             )
             return objectMapper.readValue(resultString, AutoInspectionResult::class.java)
         } catch (e: Exception) {
-            throw RuntimeException(e);
+            throw RuntimeException(e)
         }
     }
 

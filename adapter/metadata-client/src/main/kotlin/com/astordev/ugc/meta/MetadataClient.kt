@@ -4,6 +4,7 @@ import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.user.model.UserId
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 
 @Component
 class MetadataClient(
@@ -15,6 +16,10 @@ class MetadataClient(
             .get()
             .uri("/categories/{categoryId}", categoryId.long)
             .retrieve()
+            .onStatus(
+                { status -> status.is4xxClientError },
+                { _ -> Mono.empty() }
+            )
             .bodyToMono(CategoryResponse::class.java)
             .block()
     }
@@ -24,6 +29,10 @@ class MetadataClient(
             .get()
             .uri("/users/{userId}", userId.long)
             .retrieve()
+            .onStatus(
+                { status -> status.is4xxClientError },
+                { _ -> Mono.empty() }
+            )
             .bodyToMono(UserResponse::class.java)
             .block()
     }

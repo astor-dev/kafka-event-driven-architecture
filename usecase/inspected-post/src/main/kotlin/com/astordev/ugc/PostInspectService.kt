@@ -4,7 +4,9 @@ import com.astordev.ugc.inspectedpost.model.InspectedPost
 import com.astordev.ugc.port.MetadataPort
 import com.astordev.ugc.port.PostAutoInspectPort
 import com.astordev.ugc.post.model.Post
+import org.springframework.stereotype.Service
 
+@Service
 class PostInspectService(
     private val metadataPort: MetadataPort,
     private val postAutoInspectPort: PostAutoInspectPort

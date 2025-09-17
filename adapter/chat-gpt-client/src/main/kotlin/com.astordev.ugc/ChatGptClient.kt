@@ -7,14 +7,14 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 
-@Component // Spring 컴포넌트로 등록
+@Component
 class ChatGptClient(
     @param:Qualifier("chatGptWebClient")
     private val chatGptWebClient: WebClient
 ) {
     private val TARGET_GPT_MODEL = "gpt-3.5-turbo"
 
-    @Value("\${OPENAI_API_KEY}")
+    @Value("\${openai.api_key}")
     private lateinit var openaiApiKey: String
 
     private val objectMapper = CustomObjectMapper() // CustomObjectMapper 클래스가 있다고 가정

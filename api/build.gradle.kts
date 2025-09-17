@@ -1,5 +1,5 @@
-apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 apply(plugin = "org.springframework.boot")
+apply(plugin = "org.jetbrains.kotlin.plugin.spring")
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
