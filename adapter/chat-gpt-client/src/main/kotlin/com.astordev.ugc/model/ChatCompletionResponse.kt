@@ -1,6 +1,7 @@
 package com.astordev.ugc.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.apache.logging.log4j.message.Message
 
 
 data class ChatCompletionResponse (
@@ -11,12 +12,12 @@ data class ChatCompletionResponse (
     val choices: List<ChatChoice>,
     val usage: Usage,
     @param:JsonProperty("system_fingerprint")
-    val systemFingerprint: String
+    val systemFingerprint: String?
 ){
     data class ChatChoice (
         val index : Int,
         val message: Message,
-        val logprobs: Any,
+        val logprobs: Any?,
         @param:JsonProperty("finish_reason")
         val finishReason: String? = null
     ) {

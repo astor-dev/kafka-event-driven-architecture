@@ -1,6 +1,7 @@
 package com.astordev.ugc
 
 import com.astordev.ugc.model.ChatCompletionResponse
+import com.fasterxml.jackson.databind.DeserializationFeature
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -17,7 +18,9 @@ class ChatGptClient(
     @Value("\${openai.api_key}")
     private lateinit var openaiApiKey: String
 
-    private val objectMapper = CustomObjectMapper() // CustomObjectMapper 클래스가 있다고 가정
+    private val objectMapper = CustomObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
 
     fun getResultForContentWithPolicy(
         content: String,
@@ -49,6 +52,7 @@ class ChatGptClient(
             response.choices.getOrNull(0)?.message?.content
                 ?: throw RuntimeException("응답에서 콘텐츠를 찾을 수 없습니다.")
         } catch (e: Exception) {
+            print(jsonString)
             throw RuntimeException(e)
         }
     }

@@ -9,6 +9,7 @@ interface PostInspectUseCase {
 
     sealed class PostInspectionError {
         object CategoryNotFound: PostInspectionError()
+        object InspectionResultBad: PostInspectionError()
     }
 
 }
