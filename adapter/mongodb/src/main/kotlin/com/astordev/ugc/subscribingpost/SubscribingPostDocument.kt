@@ -7,11 +7,12 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
-@Document(collection = "subscribingInboxPosts")
+@Document(collection     = "subscribingInboxPosts")
 data class SubscribingPostDocument (
     @Id
     val id: String, // postId + followerId 조합
     val postId: Long,
+    val followerUserId: Long,
     val postCreatedAt: LocalDateTime,
     val addedAt: LocalDateTime,
     val read: Boolean
@@ -24,6 +25,7 @@ data class SubscribingPostDocument (
             return SubscribingPostDocument(
                 generateDocumentId(post.id, followerUserId),
                 post.id.long,
+                followerUserId.long,
                 post.createdAt,
                 LocalDateTime.now(),
                 false
