@@ -20,6 +20,10 @@ class SubscribingPostAdapter(
         subscribingPostRepository.saveAll(documents)
     }
 
+    override fun removePostFromFollowerInboxes(postId: PostId) {
+        subscribingPostRepository.deleteAllByPostId(postId)
+    }
+
     override fun listPostIdsByFollowerUserIdWithPagination(
         followerUserId: UserId,
         pageNumber: Int,

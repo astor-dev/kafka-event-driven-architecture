@@ -6,5 +6,6 @@ import com.astordev.ugc.user.model.UserId
 
 interface SubscribingPostPort {
     fun addPostToFollowerInboxes(post: Post, followerUserIds: List<UserId>)
+    fun removePostFromFollowerInboxes(postId: PostId)
     fun listPostIdsByFollowerUserIdWithPagination(followerUserId: UserId, pageNumber: Int, pageSize: Int): List<PostId>
 }

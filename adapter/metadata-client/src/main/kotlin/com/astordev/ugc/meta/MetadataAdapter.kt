@@ -22,8 +22,8 @@ class MetadataAdapter(
         return Result.Success(userResponse.name)
     }
 
-    override fun listFollowerIdsByUserId(userId: UserId): List<Long> {
-        return metadataClient.getFollowerIdsByUserId(userId)
+    override fun listFollowerIdsByUserId(userId: UserId): List<UserId> {
+        return metadataClient.getFollowerIdsByUserId(userId).map { UserId.from(it) }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.astordev.ugc.subscribingpost
 
+import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.user.model.UserId
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -29,5 +30,11 @@ class SubscribingPostRepositoryImpl(
             )
         return mongoTemplate.find(query, SubscribingPostDocument::class.java)
 
+    }
+
+    override fun deleteAllByPostId(postId: PostId) {
+        val query = Query()
+        query.addCriteria(Criteria.where("postId").`is`(postId.long))
+        mongoTemplate.remove(query, SubscribingPostDocument::class.java)
     }
 }

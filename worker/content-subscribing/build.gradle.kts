@@ -1,11 +1,10 @@
 dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
-
     implementation(project(":usecase:core"))
-    implementation(project(":usecase:inspected-post"))
-
+    implementation(project(":usecase:subscribing-post"))
     implementation(project(":adapter:kafka"))
+    implementation(project(":adapter:mysql"))
+    implementation(project(":adapter:mongodb"))
     implementation(project(":adapter:metadata-client"))
-    implementation(project(":adapter:chat-gpt-client"))
 }
