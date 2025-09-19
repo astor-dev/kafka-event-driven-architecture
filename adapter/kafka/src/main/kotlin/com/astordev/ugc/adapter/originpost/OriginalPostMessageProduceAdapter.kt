@@ -50,7 +50,7 @@ class OriginalPostMessageProduceAdapter(
 
     private fun sendMessage(message: OriginalPostMessage) {
         kafkaTemplate.send(
-            Topic.ORIGINAL_TOPIC,
+            Topic.ORIGINAL_POST,
             message.id.toString(),
             customObjectMapper.writeValueAsString(message)
         )

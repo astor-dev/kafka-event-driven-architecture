@@ -13,7 +13,8 @@ class ResolvedPostCacheAdapter(
 ): ResolvedPostCachePort {
     companion object {
         private const val KEY_PREFIX = "resolved_post:v1:"
-        private const val EXPIRE_SECONDS = 60L * 60L * 2L
+        // NOTE: WriteThrough 전략 채택으로 TTL 길게 잡음
+        private const val EXPIRE_SECONDS = 60L * 60L * 24L * 7L
     }
 
     private val objectMapper = CustomObjectMapper()
@@ -33,6 +34,10 @@ class ResolvedPostCacheAdapter(
             objectMapper.readValue(jsonString, ResolvedPost::class.java)
         }.getOrNull()
         return resolvedPost
+    }
+
+    override fun delete(postId: PostId) {
+        redisTemplate.delete(generateCacheKey(postId))
     }
 
 

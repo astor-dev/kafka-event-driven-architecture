@@ -21,8 +21,7 @@ class PostResolvingHelpService(
         }
         postPort.findById(postId)?.let {
             this.resolvePost(it)?.let {
-                resolvedPost -> resolvedPostCachePort.set(resolvedPost)
-                return resolvedPost
+                resolvedPost -> return resolvedPost
             }
         }
         return null
@@ -36,11 +35,13 @@ class PostResolvingHelpService(
     }
 
     override fun resolvePostAndSave(post: Post) {
-        TODO("Not yet implemented")
+        resolvePost(post)?.let {
+            resolvedPostCachePort.set(it)
+        }
     }
 
     override fun deleteResolvedPost(postId: PostId) {
-        TODO("Not yet implemented")
+        resolvedPostCachePort.delete(postId)
     }
 
     private fun resolvePost(post: Post): ResolvedPost? {

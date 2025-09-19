@@ -7,4 +7,5 @@ interface ResolvedPostCachePort {
 
     fun set(resolvedPost: ResolvedPost)
     fun get(postId: PostId): ResolvedPost?
+    fun delete(postId: PostId)
 }

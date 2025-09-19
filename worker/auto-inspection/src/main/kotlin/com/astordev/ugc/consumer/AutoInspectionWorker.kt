@@ -22,7 +22,7 @@ class AutoInspectionWorker(
 
 
     @KafkaListener(
-        topics = [Topic.ORIGINAL_TOPIC],
+        topics = [Topic.ORIGINAL_POST],
         groupId = "auto-inspection-consumer-group",
         concurrency = "3"
     )
