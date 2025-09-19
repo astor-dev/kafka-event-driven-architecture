@@ -36,6 +36,14 @@ class ResolvedPostCacheAdapter(
         return resolvedPost
     }
 
+    override fun multiGet(postIds: List<PostId>): List<ResolvedPost> {
+        val jsonStrings = redisTemplate.opsForValue().multiGet(postIds.map { generateCacheKey(it) })
+            ?: return emptyList()
+        return jsonStrings.map {
+            objectMapper.readValue(it, ResolvedPost::class.java)
+        }
+    }
+
     override fun delete(postId: PostId) {
         redisTemplate.delete(generateCacheKey(postId))
     }

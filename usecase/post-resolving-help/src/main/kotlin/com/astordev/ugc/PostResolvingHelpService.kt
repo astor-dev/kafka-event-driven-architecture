@@ -28,10 +28,15 @@ class PostResolvingHelpService(
     }
 
     override fun resolvePostsByIds(postIds: List<PostId>): List<ResolvedPost> {
-        val posts = postPort.listByIds(postIds)
-        return posts.mapNotNull {
+        val cachedPosts = resolvedPostCachePort.multiGet(postIds)
+        val cachedIds = cachedPosts.map { it.id }.toSet()
+        val missingIds = postIds.filter { it !in cachedIds }
+
+        val freshPosts = postPort.listByIds(missingIds).mapNotNull {
             resolvePost(it)
         }
+        val allResolvedPostsById = (freshPosts + cachedPosts).associateBy { it.id }
+        return postIds.mapNotNull { allResolvedPostsById[it] }
     }
 
     override fun resolvePostAndSave(post: Post) {
