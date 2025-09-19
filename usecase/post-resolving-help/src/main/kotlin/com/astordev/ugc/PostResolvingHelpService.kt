@@ -2,6 +2,7 @@ package com.astordev.ugc
 
 import com.astordev.ugc.port.MetadataPort
 import com.astordev.ugc.port.PostPort
+import com.astordev.ugc.port.ResolvedPostCachePort
 import com.astordev.ugc.post.model.Post
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.post.model.ResolvedPost
@@ -11,15 +12,20 @@ import org.springframework.stereotype.Service
 @Service
 class PostResolvingHelpService(
     private val postPort: PostPort,
-    private val metadataPort: MetadataPort
+    private val metadataPort: MetadataPort,
+    private val resolvedPostCachePort: ResolvedPostCachePort
 ) : PostResolvingHelpUseCase {
     override fun resolvePostById(postId: PostId): ResolvedPost? {
-        val post = postPort.findById(postId)
-        var resolvedPost: ResolvedPost? = null
-        if (post != null) {
-            resolvedPost = this.resolvePost(post)
+        resolvedPostCachePort.get(postId)?.let {
+            return it
         }
-        return resolvedPost
+        postPort.findById(postId)?.let {
+            this.resolvePost(it)?.let {
+                resolvedPost -> resolvedPostCachePort.set(resolvedPost)
+                return resolvedPost
+            }
+        }
+        return null
     }
 
     override fun resolvePostsByIds(postIds: List<PostId>): List<ResolvedPost> {

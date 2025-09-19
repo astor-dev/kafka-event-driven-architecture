@@ -7,4 +7,5 @@ dependencies {
     implementation(project(":adapter:mysql"))
     implementation(project(":adapter:mongodb"))
     implementation(project(":adapter:metadata-client"))
+    implementation(project(":adapter:redis"))
 }
