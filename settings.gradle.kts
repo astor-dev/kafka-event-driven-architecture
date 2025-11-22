@@ -25,3 +25,5 @@ include("worker")
 include("worker:auto-inspection")
 include("worker:content-subscribing")
 include("worker:content-caching")
+
+include("worker:content-indexing")
