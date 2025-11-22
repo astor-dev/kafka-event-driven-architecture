@@ -12,6 +12,7 @@ include("usecase:post-resolving-help")
 include("usecase:post")
 include("usecase:subscribing-post")
 include("usecase:inspected-post")
+include("usecase:post-search")
 
 include("adapter:metadata-client")
 include("adapter:kafka")
