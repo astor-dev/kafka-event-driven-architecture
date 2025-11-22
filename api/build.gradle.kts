@@ -20,7 +20,7 @@ dependencies {
     implementation(project(":adapter:mysql"))
     implementation(project(":adapter:mongodb"))
     implementation(project(":adapter:redis"))
-//    implementation(project(":adapter:elasticsearch"))
+    implementation(project(":adapter:elasticsearch"))
     implementation(project(":adapter:metadata-client"))
 //    implementation(project(":adapter:chat-gpt-client"))
 }
