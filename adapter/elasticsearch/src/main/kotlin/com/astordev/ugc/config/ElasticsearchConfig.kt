@@ -13,7 +13,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories
 @Configuration
 class ElasticsearchConfig(
-    val esProperties: ElasticsearchProperties,
+    private val esProperties: ElasticsearchProperties,
 ) {
     @Bean
     fun restClient(): RestClient {
