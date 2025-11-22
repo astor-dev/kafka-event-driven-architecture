@@ -5,7 +5,6 @@ import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.port.OriginPostMessageProducePort
 import com.astordev.ugc.post.model.Post
-import com.astordev.ugc.post.model.PostId
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
@@ -24,27 +23,25 @@ class OriginalPostMessageProduceAdapter(
         this.sendMessage(message)
     }
 
-    override fun sendDeleteMessage(id: PostId) {
-        val message = convertToMessage(id.long, OperationType.DELETE, null)
+    override fun sendDeleteMessage(post: Post) {
+        val message = convertToMessage(post.id.long, OperationType.DELETE, post)
         this.sendMessage(message)
     }
 
-    private fun convertToMessage(id: Long, operationType: OperationType, post: Post?): OriginalPostMessage {
+    private fun convertToMessage(id: Long, operationType: OperationType, post: Post): OriginalPostMessage {
         return OriginalPostMessage(
             id,
             operationType,
-            post?. let {
-                OriginalPostMessage.Payload(
-                    post.id,
-                    post.title,
-                    post.content,
-                    post.userId,
-                    post.categoryId,
-                    post.createdAt,
-                    post.updatedAt,
-                    post.deletedAt
-                )
-            }
+            OriginalPostMessage.Payload(
+                post.id,
+                post.title,
+                post.content,
+                post.userId,
+                post.categoryId,
+                post.createdAt,
+                post.updatedAt,
+                post.deletedAt
+            )
         )
     }
 

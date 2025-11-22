@@ -27,9 +27,7 @@ class ContentSubscribingWorker(
         val inspectedPostMessage = objectMapper.readValue(message.value(), InspectedPostMessage::class.java)
         when (inspectedPostMessage.operationType) {
             OperationType.CREATE -> {
-                inspectedPostMessage.payload?.let {
-                    subscribingPostAddToInboxUseCase.saveSubscribingInboxPost(it.post)
-                }
+                subscribingPostAddToInboxUseCase.saveSubscribingInboxPost(inspectedPostMessage.payload.post)
             }
             OperationType.UPDATE -> {
                 // DO_NTH

@@ -5,7 +5,9 @@ import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.inspectedpost.model.InspectedPost
 import com.astordev.ugc.port.InspectedPostMessageProducePort
+import com.astordev.ugc.post.model.Post
 import com.astordev.ugc.post.model.PostId
+import org.apache.kafka.common.security.oauthbearer.internals.secured.HttpAccessTokenRetriever.post
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
@@ -24,16 +26,16 @@ class InspectedPostMessageProduceAdapter(
         this.sendMessage(message)
     }
 
-    override fun sendDeleteMessage(id: PostId) {
-        val message = convertToMessage(id.long, OperationType.DELETE, null)
+    override fun sendDeleteMessage(inspectedPost: InspectedPost) {
+        val message = convertToMessage(inspectedPost.post.id.long, OperationType.DELETE, inspectedPost)
         this.sendMessage(message)
     }
 
-    private fun convertToMessage(id: Long, operationType: OperationType, inspectedPost: InspectedPost?): InspectedPostMessage {
+    private fun convertToMessage(id: Long, operationType: OperationType, inspectedPost: InspectedPost): InspectedPostMessage {
         return InspectedPostMessage(
             id,
             operationType,
-            inspectedPost?.let {
+            inspectedPost.let {
                 InspectedPostMessage.Payload(
                     inspectedPost.post,
                     inspectedPost.categoryName,

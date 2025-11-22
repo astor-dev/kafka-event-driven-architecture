@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class InspectedPostMessage (
     val id: Long,
     val operationType: OperationType,
-    val payload: Payload?
+    val payload: Payload
 ) {
     data class Payload(
         val post: Post,

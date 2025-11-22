@@ -6,5 +6,5 @@ import com.astordev.ugc.post.model.PostId
 interface OriginPostMessageProducePort {
     fun sendCreateMessage(post: Post)
     fun sendUpdateMessage(post: Post)
-    fun sendDeleteMessage(id: PostId)
+    fun sendDeleteMessage(post: Post)
 }

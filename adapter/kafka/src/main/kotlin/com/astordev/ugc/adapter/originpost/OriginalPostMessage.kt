@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 data class OriginalPostMessage (
     val id: Long,
     val operationType: OperationType,
-    val payload: Payload?
+    val payload: Payload
 ) {
     data class Payload(
         val id: PostId,
