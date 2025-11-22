@@ -18,6 +18,7 @@ include("adapter:kafka")
 include("adapter:chat-gpt-client")
 include("adapter:redis")
 include("adapter:mongodb")
+include("adapter:elasticsearch")
 
 include("worker")
 include("worker:auto-inspection")
