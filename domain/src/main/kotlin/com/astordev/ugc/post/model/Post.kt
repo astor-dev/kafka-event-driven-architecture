@@ -2,7 +2,6 @@ package com.astordev.ugc.post.model
 
 import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.user.model.UserId
-import java.lang.reflect.Array.set
 import java.time.LocalDateTime
 
 class Post private constructor(

@@ -1,7 +1,7 @@
 package com.astordev.ugc.post.model
 
-import com.astordev.ugc.SnowflakeIdFactory
 import com.astordev.ugc.IdProvider
+import com.astordev.ugc.SnowflakeIdFactory
 
 @JvmInline
 value class PostId private constructor(val long: Long) {

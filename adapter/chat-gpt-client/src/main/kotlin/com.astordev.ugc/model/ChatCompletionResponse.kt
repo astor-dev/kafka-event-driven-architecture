@@ -1,7 +1,6 @@
 package com.astordev.ugc.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import org.apache.logging.log4j.message.Message
 
 
 data class ChatCompletionResponse (
