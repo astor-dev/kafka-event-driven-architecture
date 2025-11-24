@@ -1,6 +1,5 @@
 package com.astordev.ugc.consumer
 
-import com.astordev.ugc.CustomObjectMapper
 import com.astordev.ugc.PostInspectUseCase
 import com.astordev.ugc.Result
 import com.astordev.ugc.adapter.common.OperationType
@@ -10,6 +9,7 @@ import com.astordev.ugc.adapter.originpost.toModel
 import com.astordev.ugc.inspectedpost.model.InspectedPost
 import com.astordev.ugc.port.InspectedPostMessageProducePort
 import com.astordev.ugc.post.model.Post
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
@@ -17,10 +17,10 @@ import java.time.LocalDateTime
 
 @Component
 class AutoInspectionWorker(
-    val postInspectUseCase: PostInspectUseCase,
-    val inspectedMessageProducerPort: InspectedPostMessageProducePort
+    private val postInspectUseCase: PostInspectUseCase,
+    private val inspectedMessageProducerPort: InspectedPostMessageProducePort,
+    private val objectMapper: ObjectMapper
 ) {
-    private val objectMapper = CustomObjectMapper()
 
 
     @KafkaListener(

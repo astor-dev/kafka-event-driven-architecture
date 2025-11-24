@@ -1,12 +1,5 @@
 server:
-  tomcat:
-    basedir: .data/tomcat
-    accesslog:
-      enabled: true
-      directory: logs
-      suffix: .log
-      prefix: access_log
-      pattern: "%h %l %u %t \"%r\" %s %b %D \"%{Referer}i\" \"%{User-Agent}i\""
+  port: 8084
 
 spring:
   datasource:
@@ -15,8 +8,6 @@ spring:
     password: mypassword
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -24,14 +15,13 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
   data:
-    mongodb:
-      uri: mongodb://rootuser:1234@localhost:27017/campus?authSource=admin
     redis:
       host: localhost
       port: 6379
     elasticsearch:
       es-host: localhost
       es-port: 9200
+
 external-server:
   metadata:
     url: http://localhost:8088

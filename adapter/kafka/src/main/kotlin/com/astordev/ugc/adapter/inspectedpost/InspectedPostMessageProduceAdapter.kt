@@ -1,20 +1,17 @@
 package com.astordev.ugc.adapter.inspectedpost
 
-import com.astordev.ugc.CustomObjectMapper
 import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.inspectedpost.model.InspectedPost
 import com.astordev.ugc.port.InspectedPostMessageProducePort
-import com.astordev.ugc.post.model.Post
-import com.astordev.ugc.post.model.PostId
-import org.apache.kafka.common.security.oauthbearer.internals.secured.HttpAccessTokenRetriever.post
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
 @Component
 class InspectedPostMessageProduceAdapter(
     private val kafkaTemplate: KafkaTemplate<String, String>,
-    private val customObjectMapper: CustomObjectMapper = CustomObjectMapper()
+    private val objectMapper: ObjectMapper
 ): InspectedPostMessageProducePort {
     override fun sendCreateMessage(inspectedPost: InspectedPost) {
         val message = convertToMessage(inspectedPost.post.id.long, OperationType.CREATE, inspectedPost)
@@ -50,7 +47,7 @@ class InspectedPostMessageProduceAdapter(
         kafkaTemplate.send(
             Topic.INSPECTED_POST,
             message.id.toString(),
-            customObjectMapper.writeValueAsString(message)
+            objectMapper.writeValueAsString(message)
         )
     }
 }

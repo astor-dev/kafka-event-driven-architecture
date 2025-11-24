@@ -1,15 +1,16 @@
 package com.astordev.ugc.resolvedpost
 
-import com.astordev.ugc.CustomObjectMapper
 import com.astordev.ugc.port.ResolvedPostCachePort
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.post.model.ResolvedPost
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
 
 @Component
 class ResolvedPostCacheAdapter(
-    private val redisTemplate: RedisTemplate<String, String>
+    private val redisTemplate: RedisTemplate<String, String>,
+    private val objectMapper: ObjectMapper
 ): ResolvedPostCachePort {
     companion object {
         private const val KEY_PREFIX = "resolved_post:v1:"
@@ -17,7 +18,6 @@ class ResolvedPostCacheAdapter(
         private const val EXPIRE_SECONDS = 60L * 60L * 24L * 7L
     }
 
-    private val objectMapper = CustomObjectMapper()
     override fun set(resolvedPost: ResolvedPost) {
         val jsonString = objectMapper.writeValueAsString(resolvedPost)
         return redisTemplate.opsForValue().set(

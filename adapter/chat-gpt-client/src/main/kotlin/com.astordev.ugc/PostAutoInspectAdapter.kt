@@ -3,14 +3,15 @@ package com.astordev.ugc
 import com.astordev.ugc.inspectedpost.model.AutoInspectionResult
 import com.astordev.ugc.port.PostAutoInspectPort
 import com.astordev.ugc.post.model.Post
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
 
 
 @Component
 class PostAutoInspectAdapter(
     private val chatGptClient: ChatGptClient,
+    private val objectMapper: ObjectMapper
 ) : PostAutoInspectPort {
-    private val objectMapper = CustomObjectMapper()
 
     override fun inspect(
         post: Post,

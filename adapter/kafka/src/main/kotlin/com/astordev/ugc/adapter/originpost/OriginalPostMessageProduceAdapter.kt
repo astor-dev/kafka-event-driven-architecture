@@ -1,17 +1,17 @@
 package com.astordev.ugc.adapter.originpost
 
-import com.astordev.ugc.CustomObjectMapper
 import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.port.OriginPostMessageProducePort
 import com.astordev.ugc.post.model.Post
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
 
 @Component
 class OriginalPostMessageProduceAdapter(
     private val kafkaTemplate: KafkaTemplate<String, String>,
-    private val customObjectMapper: CustomObjectMapper = CustomObjectMapper()
+    private val customObjectMapper: ObjectMapper
 ): OriginPostMessageProducePort {
     override fun sendCreateMessage(post: Post) {
         val message = convertToMessage(post.id.long, OperationType.CREATE, post)

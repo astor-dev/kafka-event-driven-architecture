@@ -1,12 +1,12 @@
 package com.astordev.ugc.consumer
 
-import com.astordev.ugc.CustomObjectMapper
 import com.astordev.ugc.SubscribingPostAddToInboxUseCase
 import com.astordev.ugc.SubscribingPostRemoveFromInboxUseCase
 import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.adapter.inspectedpost.InspectedPostMessage
 import com.astordev.ugc.post.model.PostId
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component
 @Component
 class ContentSubscribingWorker(
     private val subscribingPostAddToInboxUseCase: SubscribingPostAddToInboxUseCase,
-    private val subscribingPostRemoveFromInboxUseCase: SubscribingPostRemoveFromInboxUseCase
+    private val subscribingPostRemoveFromInboxUseCase: SubscribingPostRemoveFromInboxUseCase,
+    private val objectMapper: ObjectMapper
 ) {
-    private val objectMapper = CustomObjectMapper()
 
     @KafkaListener(
         topics = [ Topic.INSPECTED_POST ],

@@ -1,6 +1,5 @@
 package com.astordev.ugc.consumer
 
-import com.astordev.ugc.CustomObjectMapper
 import com.astordev.ugc.PostIndexingUseCase
 import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ContentIndexingWorker(
-    private val objectMapper: ObjectMapper = CustomObjectMapper(),
+    private val objectMapper: ObjectMapper,
     private val postIndexingUseCase: PostIndexingUseCase
 ) {
 

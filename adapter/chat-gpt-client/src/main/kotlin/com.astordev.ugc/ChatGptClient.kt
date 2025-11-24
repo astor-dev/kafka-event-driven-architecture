@@ -1,7 +1,9 @@
 package com.astordev.ugc
 
 import com.astordev.ugc.model.ChatCompletionResponse
+import com.astordev.ugc.utils.ObjectMapperUtils
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -11,15 +13,17 @@ import org.springframework.web.reactive.function.client.WebClient
 @Component
 class ChatGptClient(
     @param:Qualifier("chatGptWebClient")
-    private val chatGptWebClient: WebClient
+    private val chatGptWebClient: WebClient,
+    // NOTE: 특정 설정이 필요해서 Bean 사용 X
+    private val objectMapper: ObjectMapper = ObjectMapperUtils.createCommonObjectMapper()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
 ) {
     private val TARGET_GPT_MODEL = "gpt-3.5-turbo"
 
     @Value("\${openai.api_key}")
     private lateinit var openaiApiKey: String
 
-    private val objectMapper = CustomObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 
     fun getResultForContentWithPolicy(

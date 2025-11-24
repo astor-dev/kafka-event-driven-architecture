@@ -18,7 +18,7 @@ class PostDeleteService(
             ?: return Result.Failure(PostDeleteUseCase.Error.PostNotFound)
         post.delete()
         val savedPost = postPort.save(post)
-        originPostMessageProducePort.sendDeleteMessage(savedPost.id)
+        originPostMessageProducePort.sendDeleteMessage(savedPost)
         return Result.Success(savedPost)
     }
 }
