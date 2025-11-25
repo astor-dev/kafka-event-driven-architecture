@@ -1,10 +1,11 @@
 package com.astordev.ugc.consumer
 
 import com.astordev.ugc.PostIndexingUseCase
-import com.astordev.ugc.adapter.common.OperationType
+import com.astordev.ugc.adapter.common.CdcMessage
 import com.astordev.ugc.adapter.common.Topic
-import com.astordev.ugc.adapter.inspectedpost.InspectedPostMessage
+import com.astordev.ugc.adapter.inspectedpost.InspectedPostMessagePayload
 import com.astordev.ugc.adapter.inspectedpost.toModel
+import com.astordev.ugc.post.model.PostId
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
@@ -22,15 +23,14 @@ class ContentIndexingWorker(
         concurrency = "3"
     )
     fun listen(message: ConsumerRecord<String, String>) {
-        val message : InspectedPostMessage = objectMapper.readValue(message.value(), InspectedPostMessage::class.java )
-        val inspectedPost = message.toModel()
-        when (message.operationType) {
-            OperationType.CREATE ->
-                postIndexingUseCase.save(inspectedPost)
-            OperationType.UPDATE ->
-                postIndexingUseCase.save(inspectedPost)
-            OperationType.DELETE ->
-                postIndexingUseCase.delete(inspectedPost.post.id)
+        val message : CdcMessage<InspectedPostMessagePayload> = CdcMessage.fromJson(message.value(), InspectedPostMessagePayload::class.java, objectMapper)
+        when (message) {
+            is CdcMessage.Create ->
+                postIndexingUseCase.save(message.payload.toModel())
+            is CdcMessage.Update ->
+                postIndexingUseCase.save(message.payload.toModel())
+            is CdcMessage.Delete ->
+                postIndexingUseCase.delete(PostId.from(message.id))
         }
 
     }

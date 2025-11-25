@@ -2,9 +2,9 @@ package com.astordev.ugc.consumer
 
 import com.astordev.ugc.SubscribingPostAddToInboxUseCase
 import com.astordev.ugc.SubscribingPostRemoveFromInboxUseCase
-import com.astordev.ugc.adapter.common.OperationType
+import com.astordev.ugc.adapter.common.CdcMessage
 import com.astordev.ugc.adapter.common.Topic
-import com.astordev.ugc.adapter.inspectedpost.InspectedPostMessage
+import com.astordev.ugc.adapter.inspectedpost.InspectedPostMessagePayload
 import com.astordev.ugc.post.model.PostId
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -24,15 +24,15 @@ class ContentSubscribingWorker(
         concurrency = "3"
     )
     fun listen(message: ConsumerRecord<String, String>) {
-        val inspectedPostMessage = objectMapper.readValue(message.value(), InspectedPostMessage::class.java)
-        when (inspectedPostMessage.operationType) {
-            OperationType.CREATE -> {
+        val inspectedPostMessage = CdcMessage.fromJson(message.value(), InspectedPostMessagePayload::class.java, objectMapper)
+        when (inspectedPostMessage) {
+            is CdcMessage.Create -> {
                 subscribingPostAddToInboxUseCase.saveSubscribingInboxPost(inspectedPostMessage.payload.post)
             }
-            OperationType.UPDATE -> {
+            is CdcMessage.Update -> {
                 // DO_NTH
             }
-            OperationType.DELETE -> {
+            is CdcMessage.Delete -> {
                 subscribingPostRemoveFromInboxUseCase.deleteSubscribingInboxPost(PostId.from(inspectedPostMessage.id))
             }
         }
