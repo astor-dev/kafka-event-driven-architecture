@@ -2,15 +2,17 @@ package com.astordev.ugc.consumer
 
 import com.astordev.ugc.PostInspectUseCase
 import com.astordev.ugc.Result
-import com.astordev.ugc.adapter.common.OperationType
+import com.astordev.ugc.adapter.common.CdcMessage
 import com.astordev.ugc.adapter.common.Topic
-import com.astordev.ugc.adapter.originpost.OriginalPostMessage
+import com.astordev.ugc.adapter.originpost.OriginalPostMessagePayload
 import com.astordev.ugc.adapter.originpost.toModel
 import com.astordev.ugc.port.InspectedPostMessageProducePort
+import com.astordev.ugc.post.model.PostId
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+
 @Component
 class AutoInspectionWorker(
     private val postInspectUseCase: PostInspectUseCase,
@@ -25,12 +27,10 @@ class AutoInspectionWorker(
         concurrency = "3"
     )
     fun listen(message: ConsumerRecord<String, String>) {
-        val originalPostMessage = objectMapper.readValue(
-            message.value(), OriginalPostMessage::class.java
-        )
-        val post = originalPostMessage.toModel()
-        when(originalPostMessage.operationType) {
-            OperationType.CREATE -> {
+        val originalPostMessage = CdcMessage.fromJson(message.value(), OriginalPostMessagePayload::class.java, objectMapper)
+        when(originalPostMessage) {
+            is CdcMessage.Create -> {
+                val post = originalPostMessage.payload.toModel()
                 when(val inspectionResult = postInspectUseCase.inspect(post)) {
                     is Result.Failure -> {
                         inspectedMessageProducerPort.sendDeleteMessage(post.id)
@@ -40,7 +40,8 @@ class AutoInspectionWorker(
                     }
                 }
             }
-            OperationType.UPDATE -> {
+            is CdcMessage.Update -> {
+                val post = originalPostMessage.payload.toModel()
                 when(val inspectionResult = postInspectUseCase.inspect(post)) {
                     is Result.Failure -> {
                         inspectedMessageProducerPort.sendDeleteMessage(post.id)
@@ -50,8 +51,8 @@ class AutoInspectionWorker(
                     }
                 }
             }
-            OperationType.DELETE -> {
-                inspectedMessageProducerPort.sendDeleteMessage(post.id)
+            is CdcMessage.Delete -> {
+                inspectedMessageProducerPort.sendDeleteMessage(PostId.from(originalPostMessage.id))
             }
         }
     }

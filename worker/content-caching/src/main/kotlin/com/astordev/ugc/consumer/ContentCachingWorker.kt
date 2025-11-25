@@ -1,9 +1,9 @@
 package com.astordev.ugc.consumer
 
 import com.astordev.ugc.PostResolvingHelpUseCase
-import com.astordev.ugc.adapter.common.OperationType
+import com.astordev.ugc.adapter.common.CdcMessage
 import com.astordev.ugc.adapter.common.Topic
-import com.astordev.ugc.adapter.originpost.OriginalPostMessage
+import com.astordev.ugc.adapter.originpost.OriginalPostMessagePayload
 import com.astordev.ugc.adapter.originpost.toModel
 import com.astordev.ugc.post.model.PostId
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -24,15 +24,14 @@ class ContentCachingWorker(
         concurrency = "3"
     )
     fun listen(message: ConsumerRecord<String, String>) {
-        val message = objectMapper.readValue(message.value(), OriginalPostMessage::class.java)
-        val payloadOrNull = message.toModel()
-        when(message.operationType){
-            OperationType.CREATE ->
-                postResolvingHelpUseCase.resolvePostAndSave(payloadOrNull)
-            OperationType.UPDATE ->
-                postResolvingHelpUseCase.resolvePostAndSave(payloadOrNull)
-            OperationType.DELETE ->
-                postResolvingHelpUseCase.deleteResolvedPost(PostId.from(message.id))
+        val originalPostMessage = CdcMessage.fromJson(message.value(), OriginalPostMessagePayload::class.java, objectMapper)
+        when(originalPostMessage){
+            is CdcMessage.Create ->
+                postResolvingHelpUseCase.resolvePostAndSave(originalPostMessage.payload.toModel())
+            is CdcMessage.Update ->
+                postResolvingHelpUseCase.resolvePostAndSave(originalPostMessage.payload.toModel())
+            is CdcMessage.Delete ->
+                postResolvingHelpUseCase.deleteResolvedPost(PostId.from(originalPostMessage.id))
         }
 
 

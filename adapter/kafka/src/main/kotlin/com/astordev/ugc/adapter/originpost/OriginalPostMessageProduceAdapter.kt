@@ -1,5 +1,6 @@
 package com.astordev.ugc.adapter.originpost
 
+import com.astordev.ugc.adapter.common.CdcMessage
 import com.astordev.ugc.adapter.common.OperationType
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.port.OriginPostMessageProducePort
@@ -14,38 +15,34 @@ class OriginalPostMessageProduceAdapter(
     private val customObjectMapper: ObjectMapper
 ): OriginPostMessageProducePort {
     override fun sendCreateMessage(post: Post) {
-        val message = convertToMessage(post.id.long, OperationType.CREATE, post)
+        val message = CdcMessage.of(post.id.long, OperationType.CREATE, convertToPayload(post))
         this.sendMessage(message)
     }
 
     override fun sendUpdateMessage(post: Post) {
-        val message = convertToMessage(post.id.long, OperationType.UPDATE, post)
+        val message = CdcMessage.of(post.id.long, OperationType.UPDATE, convertToPayload(post))
         this.sendMessage(message)
     }
 
     override fun sendDeleteMessage(post: Post) {
-        val message = convertToMessage(post.id.long, OperationType.DELETE, post)
+        val message = CdcMessage.of<OriginalPostMessagePayload>(post.id.long, OperationType.DELETE)
         this.sendMessage(message)
     }
 
-    private fun convertToMessage(id: Long, operationType: OperationType, post: Post): OriginalPostMessage {
-        return OriginalPostMessage(
-            id,
-            operationType,
-            OriginalPostMessage.Payload(
-                post.id,
-                post.title,
-                post.content,
-                post.userId,
-                post.categoryId,
-                post.createdAt,
-                post.updatedAt,
-                post.deletedAt
-            )
+    private fun convertToPayload(post: Post): OriginalPostMessagePayload {
+        return OriginalPostMessagePayload(
+            post.id,
+            post.title,
+            post.content,
+            post.userId,
+            post.categoryId,
+            post.createdAt,
+            post.updatedAt,
+            post.deletedAt
         )
     }
 
-    private fun sendMessage(message: OriginalPostMessage) {
+    private fun sendMessage(message: CdcMessage<OriginalPostMessagePayload>) {
         kafkaTemplate.send(
             Topic.ORIGINAL_POST,
             message.id.toString(),
