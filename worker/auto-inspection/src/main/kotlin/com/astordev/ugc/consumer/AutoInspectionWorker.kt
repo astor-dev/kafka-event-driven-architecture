@@ -31,25 +31,17 @@ class AutoInspectionWorker(
         when(originalPostMessage) {
             is CdcMessage.Create -> {
                 val post = originalPostMessage.payload.toModel()
-                when(val inspectionResult = postInspectUseCase.inspect(post)) {
-                    is Result.Failure -> {
-                        inspectedMessageProducerPort.sendDeleteMessage(post.id)
-                    }
-                    is Result.Success -> {
-                        inspectedMessageProducerPort.sendCreateMessage(inspectionResult.data)
-                    }
-                }
+                postInspectUseCase.inspect(post).fold(
+                    ifLeft = { inspectedMessageProducerPort.sendDeleteMessage(post.id) },
+                    ifRight = { inspectedMessageProducerPort.sendCreateMessage(it) }
+                )
             }
             is CdcMessage.Update -> {
                 val post = originalPostMessage.payload.toModel()
-                when(val inspectionResult = postInspectUseCase.inspect(post)) {
-                    is Result.Failure -> {
-                        inspectedMessageProducerPort.sendDeleteMessage(post.id)
-                    }
-                    is Result.Success -> {
-                        inspectedMessageProducerPort.sendUpdateMessage(inspectionResult.data)
-                    }
-                }
+                postInspectUseCase.inspect(post).fold(
+                    ifLeft = { inspectedMessageProducerPort.sendDeleteMessage(post.id) },
+                    ifRight = { inspectedMessageProducerPort.sendUpdateMessage(it) }
+                )
             }
             is CdcMessage.Delete -> {
                 inspectedMessageProducerPort.sendDeleteMessage(PostId.from(originalPostMessage.id))

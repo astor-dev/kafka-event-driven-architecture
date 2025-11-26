@@ -1,8 +1,15 @@
 package com.astordev.ugc
 
+import arrow.core.Either
+import arrow.core.left
+import arrow.core.raise.context.bind
+import arrow.core.raise.context.either
+import arrow.core.raise.context.raise
+import arrow.core.right
 import com.astordev.ugc.port.MetadataPort
 import com.astordev.ugc.port.PostPort
 import com.astordev.ugc.port.ResolvedPostCachePort
+import com.astordev.ugc.post.error.PostResolvingError
 import com.astordev.ugc.post.model.Post
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.post.model.ResolvedPost
@@ -15,33 +22,28 @@ class PostResolvingHelpService(
     private val metadataPort: MetadataPort,
     private val resolvedPostCachePort: ResolvedPostCachePort
 ) : PostResolvingHelpUseCase {
-    override fun resolvePostById(postId: PostId): ResolvedPost? {
-        resolvedPostCachePort.get(postId)?.let {
-            return it
-        }
-        postPort.findById(postId)?.let {
-            this.resolvePost(it)?.let {
-                resolvedPost -> return resolvedPost
-            }
-        }
-        return null
+    override fun resolvePostById(postId: PostId): Either<PostResolvingError, ResolvedPost> = either {
+        resolvedPostCachePort.get(postId)?.let { return@either it }
+
+        val post = postPort.findById(postId) ?: raise(PostResolvingError.PostNotFound)
+        return this.resolvePost(post)
     }
 
-    override fun resolvePostsByIds(postIds: List<PostId>): List<ResolvedPost> {
+    override fun resolvePostsByIds(postIds: List<PostId>): Either<PostResolvingError, List<ResolvedPost>> = either {
         val cachedPosts = resolvedPostCachePort.multiGet(postIds)
         val cachedIds = cachedPosts.map { it.id }.toSet()
         val missingIds = postIds.filter { it !in cachedIds }
 
-        val freshPosts = postPort.listByIds(missingIds).mapNotNull {
-            resolvePost(it)
+        val freshPosts = postPort.listByIds(missingIds).map {
+            resolvePost(it).bind()
         }
         val allResolvedPostsById = (freshPosts + cachedPosts).associateBy { it.id }
-        return postIds.mapNotNull { allResolvedPostsById[it] }
+        postIds.mapNotNull { allResolvedPostsById[it] }
     }
 
     override fun resolvePostAndSave(post: Post) {
-        resolvePost(post)?.let {
-            resolvedPostCachePort.set(it)
+        resolvePost(post).onRight { resolvedPost ->
+            resolvedPostCachePort.set(resolvedPost)
         }
     }
 
@@ -49,17 +51,14 @@ class PostResolvingHelpService(
         resolvedPostCachePort.delete(postId)
     }
 
-    private fun resolvePost(post: Post): ResolvedPost? {
-        var resolvedPost: ResolvedPost? = null
-        val userNameResult: Result<String, MetadataPort.GetUserError> = metadataPort.getUserNameByUserId(post.userId)
-        val categoryNameResult: Result<String, MetadataPort.GetCategoryError> = metadataPort.getCategoryNameByCategoryId(post.categoryId)
-        if (userNameResult is Result.Success && categoryNameResult is Result.Success) {
-            resolvedPost = ResolvedPost.generate(
-                post,
-                userNameResult.data,
-                categoryNameResult.data
-            )
-        }
-        return resolvedPost
+    private fun resolvePost(post: Post): Either<PostResolvingError, ResolvedPost> = either {
+        val userName = metadataPort.getUserNameByUserId(post.userId) ?: raise(PostResolvingError.UserNotFound)
+        val categoryName = metadataPort.getCategoryNameByCategoryId(post.categoryId) ?: raise((PostResolvingError.CategoryNotFound))
+
+        ResolvedPost.generate(
+            post,
+            userName,
+            categoryName
+        )
     }
 }

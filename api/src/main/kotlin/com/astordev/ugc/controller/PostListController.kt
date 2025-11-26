@@ -1,10 +1,12 @@
 package com.astordev.ugc.controller
 
 import com.astordev.ugc.SubscribingPostListUseCase
+import com.astordev.ugc.error.converter.extractErrorDetail
 import com.astordev.ugc.model.PostListDto
 import com.astordev.ugc.user.model.UserId
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/list")
@@ -17,10 +19,20 @@ class PostListController(
         @PathVariable("userId") userId: Long,
         @RequestParam(name = "page", defaultValue = "0", required = false) page: Int = 0
     ): ResponseEntity<List<PostListDto>> {
-        val subscribingInboxPosts = subscribingPostListUseCase.listSubscribingInboxPosts(
+        return subscribingPostListUseCase.listSubscribingInboxPosts(
             SubscribingPostListUseCase.Request(page, UserId.from(userId))
+        ).fold(
+            ifLeft = {
+                val errorDetail = it.extractErrorDetail()
+                throw ResponseStatusException(
+                    errorDetail.httpStatus,
+                    errorDetail.message
+                )
+            },
+            ifRight = {
+                ResponseEntity.ok().body(it.map(PostListDto::from))
+            }
         )
-        return ResponseEntity.ok().body(subscribingInboxPosts.map { PostListDto.from(it) })
     }
 
     @GetMapping("/search")

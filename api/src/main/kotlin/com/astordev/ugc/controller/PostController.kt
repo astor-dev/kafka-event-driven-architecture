@@ -5,6 +5,7 @@ import com.astordev.ugc.PostDeleteUseCase
 import com.astordev.ugc.PostReadUseCase
 import com.astordev.ugc.PostUpdateUseCase
 import com.astordev.ugc.category.model.CategoryId
+import com.astordev.ugc.error.converter.extractErrorDetail
 import com.astordev.ugc.model.PostCreateRequest
 import com.astordev.ugc.model.PostDetailDto
 import com.astordev.ugc.model.PostDto
@@ -68,9 +69,15 @@ class PostController(
     fun readPostDetail(
         @PathVariable("postId") postId: Long
     ): ResponseEntity<PostDetailDto> {
-        val resolvedPost = postReadUseCase.getById(PostId.from(postId))
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        return ResponseEntity.ok().body(PostDetailDto.from(resolvedPost))
+        return postReadUseCase.getById(PostId.from(postId)).fold(
+            ifLeft =  {
+                val errorDetail = it.extractErrorDetail()
+                throw ResponseStatusException(errorDetail.httpStatus, errorDetail.message)
+            },
+            ifRight = {
+                ResponseEntity.ok(PostDetailDto.from(it))
+            }
+        )
     }
 
     @DeleteMapping("{postId}")

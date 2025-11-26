@@ -1,6 +1,8 @@
 package com.astordev.ugc
 
+import arrow.core.Either
 import com.astordev.ugc.port.SubscribingPostPort
+import com.astordev.ugc.post.error.PostResolvingError
 import com.astordev.ugc.post.model.ResolvedPost
 import org.springframework.stereotype.Service
 
@@ -14,7 +16,7 @@ class SubscribingPostListService(
         private const val PAGE_SIZE = 5
     }
 
-    override fun listSubscribingInboxPosts(request: SubscribingPostListUseCase.Request): List<ResolvedPost> {
+    override fun listSubscribingInboxPosts(request: SubscribingPostListUseCase.Request): Either<PostResolvingError, List<ResolvedPost>> {
         val subscribingPostIds = subscribingPostPort.listPostIdsByFollowerUserIdWithPagination(
             request.followerUserId,
             request.pageNumber,

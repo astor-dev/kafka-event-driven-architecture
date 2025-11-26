@@ -38,6 +38,7 @@ subprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict")
+            freeCompilerArgs.add("-Xcontext-parameters")
             jvmTarget.set(JvmTarget.JVM_21)
         }
     }
