@@ -4,7 +4,7 @@ subprojects {
     dependencies {
         implementation(project(":common"))
         implementation(project(":domain"))
-        implementation(project(":usecase:core"))
+        implementation(project(":use-case:core"))
 
         implementation("org.springframework:spring-context")
         implementation("org.slf4j:slf4j-api")

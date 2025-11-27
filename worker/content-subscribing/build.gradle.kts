@@ -1,8 +1,8 @@
 dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
-    implementation(project(":usecase:core"))
-    implementation(project(":usecase:subscribing-post"))
+    implementation(project(":use-case:core"))
+    implementation(project(":use-case:subscribing-post"))
     implementation(project(":adapter:kafka"))
     implementation(project(":adapter:mysql"))
     implementation(project(":adapter:mongodb"))

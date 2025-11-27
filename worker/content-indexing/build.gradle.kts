@@ -2,7 +2,7 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
 
-    implementation(project(":usecase:post-search"))
+    implementation(project(":use-case:post-search"))
 
     implementation(project(":adapter:kafka"))
     implementation(project(":adapter:mysql"))

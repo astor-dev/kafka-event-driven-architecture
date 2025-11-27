@@ -10,11 +10,11 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
 //
-    implementation(project(":usecase:post"))
-//    implementation(project(":usecase:inspected-post"))
-    implementation(project(":usecase:subscribing-post"))
-//    implementation(project(":usecase:post-search-usecase"))
-//    implementation(project(":usecase:coupon-usecase"))
+    implementation(project(":use-case:post"))
+//    implementation(project(":use-case:inspected-post"))
+    implementation(project(":use-case:subscribing-post"))
+//    implementation(project(":use-case:post-search-usecase"))
+//    implementation(project(":use-case:coupon-usecase"))
 //
     implementation(project(":adapter:kafka"))
     implementation(project(":adapter:mysql"))
