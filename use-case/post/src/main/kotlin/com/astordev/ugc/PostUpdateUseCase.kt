@@ -17,5 +17,5 @@ interface PostUpdateUseCase {
 }
 
 sealed interface PostUpdateError : DomainError {
-    object PostNotFound : PostUpdateError
+    data class PostNotFound(val id: PostId) : PostUpdateError
 }

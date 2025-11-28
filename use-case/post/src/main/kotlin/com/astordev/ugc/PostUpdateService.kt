@@ -17,7 +17,7 @@ class PostUpdateService (
     @Transactional
     override fun update(request: PostUpdateUseCase.Request): Either<PostUpdateError, Post>  = either {
         val post = postPort.findById(request.postId)
-            ?: raise(PostUpdateError.PostNotFound)
+            ?: raise(PostUpdateError.PostNotFound(request.postId))
         post.update(
             request.title,
             request.content,

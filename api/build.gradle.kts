@@ -11,7 +11,7 @@ dependencies {
     implementation(project(":domain"))
 //
     implementation(project(":use-case:post"))
-//    implementation(project(":use-case:inspected-post"))
+    implementation(project(":use-case:post-resolving-help"))
     implementation(project(":use-case:subscribing-post"))
 //    implementation(project(":use-case:post-search-usecase"))
 //    implementation(project(":use-case:coupon-usecase"))

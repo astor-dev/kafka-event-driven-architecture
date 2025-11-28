@@ -1,15 +1,12 @@
 package com.astordev.ugc
 
 import arrow.core.Either
-import arrow.core.left
 import arrow.core.raise.context.bind
 import arrow.core.raise.context.either
 import arrow.core.raise.context.raise
-import arrow.core.right
 import com.astordev.ugc.port.MetadataPort
 import com.astordev.ugc.port.PostPort
 import com.astordev.ugc.port.ResolvedPostCachePort
-import com.astordev.ugc.post.error.PostResolvingError
 import com.astordev.ugc.post.model.Post
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.post.model.ResolvedPost
@@ -25,7 +22,7 @@ class PostResolvingHelpService(
     override fun resolvePostById(postId: PostId): Either<PostResolvingError, ResolvedPost> = either {
         resolvedPostCachePort.get(postId)?.let { return@either it }
 
-        val post = postPort.findById(postId) ?: raise(PostResolvingError.PostNotFound)
+        val post = postPort.findById(postId) ?: raise(PostResolvingError.PostNotFound(postId))
         return this.resolvePost(post)
     }
 
@@ -52,8 +49,8 @@ class PostResolvingHelpService(
     }
 
     private fun resolvePost(post: Post): Either<PostResolvingError, ResolvedPost> = either {
-        val userName = metadataPort.getUserNameByUserId(post.userId) ?: raise(PostResolvingError.UserNotFound)
-        val categoryName = metadataPort.getCategoryNameByCategoryId(post.categoryId) ?: raise((PostResolvingError.CategoryNotFound))
+        val userName = metadataPort.getUserNameByUserId(post.userId) ?: raise(PostResolvingError.UserNotFound(post.userId))
+        val categoryName = metadataPort.getCategoryNameByCategoryId(post.categoryId) ?: raise((PostResolvingError.CategoryNotFound(post.categoryId)))
 
         ResolvedPost.generate(
             post,

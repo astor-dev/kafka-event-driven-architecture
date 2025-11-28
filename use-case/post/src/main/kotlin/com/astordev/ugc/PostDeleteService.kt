@@ -18,7 +18,7 @@ class PostDeleteService(
     @Transactional
     override fun delete(request: PostDeleteUseCase.Request): Either<PostDeleteError, Post> = either {
         val post = postPort.findById(request.postId)
-            ?: raise(PostDeleteError.PostNotFound)
+            ?: raise(PostDeleteError.PostNotFound(request.postId))
         post.delete()
         val savedPost = postPort.save(post)
         originPostMessageProducePort.sendDeleteMessage(savedPost)

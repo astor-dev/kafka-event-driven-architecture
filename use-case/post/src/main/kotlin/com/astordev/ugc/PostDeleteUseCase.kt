@@ -13,5 +13,5 @@ interface PostDeleteUseCase {
 }
 
 sealed interface PostDeleteError : DomainError {
-    object PostNotFound : PostDeleteError
+    data class PostNotFound(val id: PostId) : PostDeleteError
 }

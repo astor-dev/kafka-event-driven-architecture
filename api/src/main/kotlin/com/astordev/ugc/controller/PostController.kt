@@ -1,23 +1,17 @@
 package com.astordev.ugc.controller
 
-import com.astordev.ugc.PostCreateUseCase
-import com.astordev.ugc.PostDeleteError
-import com.astordev.ugc.PostDeleteUseCase
-import com.astordev.ugc.PostReadUseCase
-import com.astordev.ugc.PostUpdateError
-import com.astordev.ugc.PostUpdateUseCase
+import com.astordev.ugc.*
 import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.error.converter.extractErrorDetail
+import com.astordev.ugc.error.thenThrow
 import com.astordev.ugc.model.PostCreateRequest
 import com.astordev.ugc.model.PostDetailDto
 import com.astordev.ugc.model.PostDto
 import com.astordev.ugc.model.PostUpdateRequest
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.user.model.UserId
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/posts")
@@ -57,8 +51,7 @@ class PostController(
         val response = updateResult.fold(
             ifLeft = {
                 when (it) {
-                    PostUpdateError.PostNotFound ->
-                        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found")
+                    is PostUpdateError.PostNotFound -> it.extractErrorDetail().thenThrow()
                 }
             },
             ifRight = { ResponseEntity.ok(PostDto.from(it)) }
@@ -71,10 +64,7 @@ class PostController(
         @PathVariable("postId") postId: Long
     ): ResponseEntity<PostDetailDto> {
         return postReadUseCase.getById(PostId.from(postId)).fold(
-            ifLeft =  {
-                val errorDetail = it.extractErrorDetail()
-                throw ResponseStatusException(errorDetail.httpStatus, errorDetail.message)
-            },
+            ifLeft =  { it.extractErrorDetail().thenThrow() },
             ifRight = {
                 ResponseEntity.ok(PostDetailDto.from(it))
             }
@@ -93,8 +83,7 @@ class PostController(
         val response = deleteResult.fold(
             ifLeft = {
                 when (it) {
-                    is PostDeleteError.PostNotFound ->
-                        throw ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found")
+                    is PostDeleteError.PostNotFound -> it.extractErrorDetail().thenThrow()
                 }
             },
             ifRight = { ResponseEntity.ok(PostDto.from(it)) }

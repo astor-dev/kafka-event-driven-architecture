@@ -1,7 +1,6 @@
 package com.astordev.ugc
 
 import arrow.core.Either
-import com.astordev.ugc.post.error.PostResolvingError
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.post.model.ResolvedPost
 import org.springframework.stereotype.Service
