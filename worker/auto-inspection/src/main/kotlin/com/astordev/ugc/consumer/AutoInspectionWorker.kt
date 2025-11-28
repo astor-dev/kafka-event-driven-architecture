@@ -1,7 +1,6 @@
 package com.astordev.ugc.consumer
 
 import com.astordev.ugc.PostInspectUseCase
-import com.astordev.ugc.Result
 import com.astordev.ugc.adapter.common.CdcMessage
 import com.astordev.ugc.adapter.common.Topic
 import com.astordev.ugc.adapter.originpost.OriginalPostMessagePayload

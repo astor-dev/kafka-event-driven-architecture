@@ -1,5 +1,7 @@
 package com.astordev.ugc
 
+import arrow.core.Either
+import arrow.core.raise.either
 import com.astordev.ugc.port.OriginPostMessageProducePort
 import com.astordev.ugc.port.PostPort
 import com.astordev.ugc.post.model.Post
@@ -13,9 +15,9 @@ class PostUpdateService (
 ) : PostUpdateUseCase {
 
     @Transactional
-    override fun update(request: PostUpdateUseCase.Request): Result<Post, PostUpdateUseCase.Error> {
+    override fun update(request: PostUpdateUseCase.Request): Either<PostUpdateError, Post>  = either {
         val post = postPort.findById(request.postId)
-            ?: return Result.Failure(PostUpdateUseCase.Error.PostNotFound)
+            ?: raise(PostUpdateError.PostNotFound)
         post.update(
             request.title,
             request.content,
@@ -23,6 +25,6 @@ class PostUpdateService (
         )
         val savedPost = postPort.save(post)
         originPostMessageProducePort.sendUpdateMessage(savedPost)
-        return Result.Success(savedPost)
+        savedPost
     }
 }

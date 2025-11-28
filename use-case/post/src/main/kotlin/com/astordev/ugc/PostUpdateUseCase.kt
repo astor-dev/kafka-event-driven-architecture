@@ -1,11 +1,12 @@
 package com.astordev.ugc
 
+import arrow.core.Either
 import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.post.model.Post
 import com.astordev.ugc.post.model.PostId
 
 interface PostUpdateUseCase {
-    fun update(request: Request): Result<Post,Error>
+    fun update(request: Request): Either<PostUpdateError, Post>
 
     data class Request (
         val postId: PostId,
@@ -13,8 +14,8 @@ interface PostUpdateUseCase {
         val content: String,
         val categoryId: CategoryId
     )
+}
 
-    sealed class Error {
-        object PostNotFound: Error()
-    }
+sealed interface PostUpdateError : DomainError {
+    object PostNotFound : PostUpdateError
 }

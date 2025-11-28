@@ -1,8 +1,10 @@
 package com.astordev.ugc.controller
 
 import com.astordev.ugc.PostCreateUseCase
+import com.astordev.ugc.PostDeleteError
 import com.astordev.ugc.PostDeleteUseCase
 import com.astordev.ugc.PostReadUseCase
+import com.astordev.ugc.PostUpdateError
 import com.astordev.ugc.PostUpdateUseCase
 import com.astordev.ugc.category.model.CategoryId
 import com.astordev.ugc.error.converter.extractErrorDetail
@@ -12,7 +14,6 @@ import com.astordev.ugc.model.PostDto
 import com.astordev.ugc.model.PostUpdateRequest
 import com.astordev.ugc.post.model.PostId
 import com.astordev.ugc.user.model.UserId
-import com.astordev.ugc.util.mapBoth
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -53,14 +54,14 @@ class PostController(
                 CategoryId.from(request.categoryId)
             )
         )
-        val response = updateResult.mapBoth(
-            onSuccess = { ResponseEntity.ok(PostDto.from(it)) },
-            onFailure = {
+        val response = updateResult.fold(
+            ifLeft = {
                 when (it) {
-                    is PostUpdateUseCase.Error.PostNotFound ->
+                    PostUpdateError.PostNotFound ->
                         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found")
                 }
-            }
+            },
+            ifRight = { ResponseEntity.ok(PostDto.from(it)) }
         )
         return response
     }
@@ -89,14 +90,14 @@ class PostController(
                 PostId.from(postId)
             )
         )
-        val response = deleteResult.mapBoth(
-            onSuccess = { ResponseEntity.ok(PostDto.from(it)) },
-            onFailure = {
+        val response = deleteResult.fold(
+            ifLeft = {
                 when (it) {
-                    is PostDeleteUseCase.Error.PostNotFound ->
+                    is PostDeleteError.PostNotFound ->
                         throw ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found")
                 }
-            }
+            },
+            ifRight = { ResponseEntity.ok(PostDto.from(it)) }
         )
         return response
     }

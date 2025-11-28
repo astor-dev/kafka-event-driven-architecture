@@ -1,5 +1,8 @@
 package com.astordev.ugc
 
+import arrow.core.Either
+import arrow.core.raise.context.either
+import arrow.core.raise.context.raise
 import com.astordev.ugc.port.OriginPostMessageProducePort
 import com.astordev.ugc.port.PostPort
 import com.astordev.ugc.post.model.Post
@@ -13,12 +16,12 @@ class PostDeleteService(
 ) : PostDeleteUseCase {
 
     @Transactional
-    override fun delete(request: PostDeleteUseCase.Request): Result<Post, PostDeleteUseCase.Error> {
+    override fun delete(request: PostDeleteUseCase.Request): Either<PostDeleteError, Post> = either {
         val post = postPort.findById(request.postId)
-            ?: return Result.Failure(PostDeleteUseCase.Error.PostNotFound)
+            ?: raise(PostDeleteError.PostNotFound)
         post.delete()
         val savedPost = postPort.save(post)
         originPostMessageProducePort.sendDeleteMessage(savedPost)
-        return Result.Success(savedPost)
+        savedPost
     }
 }
